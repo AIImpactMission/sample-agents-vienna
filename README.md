@@ -1,4 +1,7 @@
-# BitGN Platform Samples
+# BitGN Platform Samples – adapted for Vienna participants
+
+*This version of the repo is almost the same, but has been modified to make it easier for participants using proxy
+ API keys provided to participants of the Vienna in-person event.*
 
 This repository contains sample agents for the [BitGN Platform](https://bitgn.com). The sample agents use SDKs that are auto-generated from the [BitGN Schema](https://buf.build/bitgn/api), which is stored in the [proto/](proto/) folder.
 

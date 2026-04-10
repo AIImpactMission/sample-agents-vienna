@@ -1,6 +1,8 @@
 import json
 import time
 from typing import Annotated, List, Literal, Union
+import os
+from pathlib import Path
 
 from annotated_types import Ge, Le, MaxLen, MinLen
 from google.protobuf.json_format import MessageToDict
@@ -100,6 +102,32 @@ CLI_CLR = "\x1B[0m"
 CLI_BLUE = "\x1B[34m"
 
 
+def load_local_env() -> None:
+    env_path = Path(__file__).with_name(".env")
+    if not env_path.exists():
+        return
+
+    for line in env_path.read_text().splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+
+        key, value = stripped.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip("'\""))
+
+
+def get_proxy_api_key() -> str:
+    load_local_env()
+    proxy_api_key = os.getenv("PROXY_API_KEY") or os.getenv("OPENAI_API_KEY")
+    if proxy_api_key:
+        return proxy_api_key
+
+    raise RuntimeError(
+        "Missing API key. Export PROXY_API_KEY before running main.py. "
+        "For backward compatibility, OPENAI_API_KEY is also accepted."
+    )
+
+
 def dispatch(r: MiniRuntimeClientSync, cmd: BaseModel):
     if isinstance(cmd, Req_Tree):
         return r.outline(OutlineRequest(path=cmd.path))
@@ -120,7 +148,10 @@ def dispatch(r: MiniRuntimeClientSync, cmd: BaseModel):
 
 
 def run_agent(model: str, harness_url: str, task_text: str):
-    client = OpenAI()
+    client = OpenAI(
+        base_url="http://hackathon-proxy.westeurope.azurecontainer.io:3000/v1",
+        api_key=get_proxy_api_key(),
+    )
     vm = MiniRuntimeClientSync(harness_url)
 
     # log will contain conversation context for the agent within task

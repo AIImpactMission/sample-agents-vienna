@@ -7,15 +7,16 @@ Runnable Python sample for the `bitgn/sandbox` benchmark. This is a sandbox, so:
 
 ## Setup
 
-1. Export `OPENAI_API_KEY`
-2. Optionally export `BENCHMARK_HOST` if you are pointing at a non-default harness endpoint
-3. Run `uv sync`
+1. Export `PROXY_API_KEY`
+2. `OPENAI_API_KEY` is also accepted as a backward-compatible fallback
+3. Optionally export `BENCHMARK_HOST` if you are pointing at a non-default harness endpoint
+4. Run `uv sync`
 
 ## Commands
 
-- Run the full sandbox benchmark: `uv run python main.py`
-- Run a single task: `uv run python main.py t01`
-- Run a subset of tasks: `uv run python main.py t01 t03`
+- Run the full sandbox benchmark: `uv run python3 main.py`
+- Run a single task: `uv run python3 main.py t01`
+- Run a subset of tasks: `uv run python3 main.py t01 t03`
 - Install or update the local environment: `make sync`
 - Run the full benchmark via Make: `make run`
 - Run selected tasks via Make: `make task TASKS="t01 t03"`
